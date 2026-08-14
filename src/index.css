@@ -1,0 +1,32 @@
+/* Fonts (Inter, JetBrains Mono, Material Symbols) are loaded via a <link>
+   tag in index.html rather than @import here, to avoid a render-blocking
+   double fetch and to match Google Fonts' recommended loading strategy for
+   the Material Symbols variable icon font. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  @apply bg-background font-sans text-body-md text-on-background;
+}
+
+/* Material Symbols baseline reset so icons render at a consistent size/weight
+   across the app (used sparingly for auth + nav iconography). */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-size: 20px;
+  line-height: 1;
+  user-select: none;
+}
+
+/* Visible focus ring for keyboard users, consistent with the design
+   system's Indigo focus treatment. */
+:focus-visible {
+  outline: 2px solid #4648d4;
+  outline-offset: 2px;
+}
