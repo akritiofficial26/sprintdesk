@@ -9,7 +9,6 @@ export const jsonPlaceholderApi = axios.create({
   baseURL: "https://jsonplaceholder.typicode.com",
 });
 
-// --- Request interceptor: attach bearer token from memory ---
 dummyJsonApi.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
   if (token) {
@@ -18,10 +17,6 @@ dummyJsonApi.interceptors.request.use((config) => {
   return config;
 });
 
-// --- Response interceptor: on 401, refresh once and retry the original request ---
-// Requests that arrive while a refresh is already in-flight are queued and
-// replayed once the new token is available, so we never fire multiple
-// concurrent refresh calls.
 let isRefreshing = false;
 let pendingQueue: Array<(token: string | null) => void> = [];
 
@@ -46,7 +41,6 @@ dummyJsonApi.interceptors.response.use(
     originalRequest._retry = true;
 
     if (isRefreshing) {
-      // Wait for the in-flight refresh to finish, then retry with the new token.
       return new Promise((resolve, reject) => {
         pendingQueue.push((token) => {
           if (!token) return reject(error);
