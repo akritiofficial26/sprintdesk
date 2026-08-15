@@ -1,4 +1,3 @@
-// ---- Auth ----
 export interface User {
   id: number;
   username: string;
@@ -13,7 +12,6 @@ export interface LoginResponse extends User {
   refreshToken: string;
 }
 
-// ---- Board / Tasks ----
 export type ColumnId = "backlog" | "in-progress" | "review" | "done";
 
 export type Priority = "low" | "medium" | "high";
@@ -32,9 +30,10 @@ export interface Task {
   columnId: ColumnId;
   priority: Priority;
   assignee: string;
-  dueDate: string; // ISO date
+  dueDate: string;
   comments: Comment[];
   createdAt: string;
+  completedAt?: string;
 }
 
 export interface Column {
@@ -43,7 +42,6 @@ export interface Column {
   taskIds: number[];
 }
 
-// ---- Notifications ----
 export interface AppNotification {
   id: number;
   title: string;
