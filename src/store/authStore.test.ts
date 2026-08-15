@@ -63,10 +63,9 @@ describe("authStore", () => {
   it("rejects a Remember-me refresh token once the 30-day window has lapsed", () => {
     localStorage.setItem("sprintdesk_remember_me", "1");
     localStorage.setItem("sprintdesk_refresh_token", "stale-token");
-    localStorage.setItem("sprintdesk_remember_until", String(Date.now() - 1000)); // already expired
+    localStorage.setItem("sprintdesk_remember_until", String(Date.now() - 1000));
 
     expect(refreshTokenStorage.get()).toBeNull();
-    // Expired state should have been cleaned up too.
     expect(localStorage.getItem("sprintdesk_refresh_token")).toBeNull();
   });
 });

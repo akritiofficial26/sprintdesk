@@ -8,26 +8,15 @@ const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 interface AuthState {
   user: User | null;
-  accessToken: string | null; // intentionally NOT persisted — memory only
+  accessToken: string | null;
   isAuthenticated: boolean;
-  isInitializing: boolean; // true while we validate session on app boot
+  isInitializing: boolean;
   setSession: (user: User, accessToken: string, refreshToken: string, rememberMe?: boolean) => void;
   setAccessToken: (accessToken: string) => void;
   clearSession: () => void;
   finishInitializing: () => void;
 }
 
-// --- "local-storage simulation" for the refresh token ---
-//
-// Bonus feature: "Remember me" with simulated 30-day persistence.
-//   - Checked  -> refresh token lives in localStorage, alongside an expiry
-//                 timestamp 30 days out. Session survives closing the browser.
-//   - Unchecked -> refresh token lives in sessionStorage, so it's gone the
-//                  moment the tab/browser is closed (still survives an
-//                  in-tab page refresh, per the assignment's requirement).
-//
-// Kept isolated behind small helpers so it's easy to swap for a real
-// httpOnly-cookie-based flow later without touching call sites.
 function isRemembering(): boolean {
   return localStorage.getItem(REMEMBER_FLAG_KEY) === "1";
 }
@@ -52,7 +41,6 @@ export const refreshTokenStorage = {
       const expiry = Number(localStorage.getItem(REMEMBER_EXPIRY_KEY) ?? 0);
       const token = localStorage.getItem(REFRESH_TOKEN_KEY);
       if (token && Date.now() < expiry) return token;
-      // 30-day remember-me window has lapsed — fall through to logged-out.
       refreshTokenStorage.clear();
       return null;
     }
