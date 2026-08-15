@@ -6,11 +6,14 @@ export interface LoginPayload {
   password: string;
 }
 
+
+const ACCESS_TOKEN_TTL_MINS = Number(import.meta.env.VITE_ACCESS_TOKEN_TTL_MINS) || 30;
+
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
   const { data } = await dummyJsonApi.post<LoginResponse>("/auth/login", {
     username: payload.username,
     password: payload.password,
-    expiresInMins: 1, 
+    expiresInMins: ACCESS_TOKEN_TTL_MINS,
   });
   return data;
 }

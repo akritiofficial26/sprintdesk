@@ -44,14 +44,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               "placeholder:text-outline",
               "focus:border-primary focus:ring-2 focus:ring-primary/10",
               icon ? "pl-[44px]" : "px-md",
-              trailing ? "pr-[44px]" : icon ? "pr-md" : "",
+              trailing ? "pr-[52px]" : icon ? "pr-md" : "",
               error ? "border-error" : "border-outline-variant",
               className,
             ].join(" ")}
             {...rest}
           />
           {trailing && (
-            <div className="absolute right-md top-1/2 -translate-y-1/2 flex items-center">
+            <div className="absolute right-xs top-1/2 -translate-y-1/2 flex items-center">
               {trailing}
             </div>
           )}

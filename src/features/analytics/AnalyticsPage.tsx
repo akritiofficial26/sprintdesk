@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -21,8 +21,7 @@ import {
   getStatusDistribution,
 } from "./analyticsSelectors";
 
-// Categorical/ordinal data colors are theme-independent — they encode data identity,
-// not surface chrome, so they stay constant across light/dark.
+
 const STATUS_COLORS: Record<string, string> = {
   backlog: "#2a78d6",
   "in-progress": "#eb6834",
@@ -32,8 +31,7 @@ const STATUS_COLORS: Record<string, string> = {
 const PRIORITY_COLORS = { low: "#86b6ef", medium: "#2a78d6", high: "#104281" };
 const ACCENT = "#2a78d6";
 
-// Chart chrome (gridlines, axis text, tooltip, bar separators) mirrors the design
-// tokens per theme, since Recharts needs literal color strings rather than Tailwind classes.
+
 const CHART_CHROME = {
   light: {
     gridline: "#e1e3e4",
@@ -63,6 +61,40 @@ const SHORT_COLUMN_LABEL: Record<string, string> = {
   Review: "Review",
   Done: "Done",
 };
+
+
+function DeferredChart({ height, children }: { height: number; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setIsVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "250px" }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} style={{ height }}>
+      {isVisible ? children : null}
+    </div>
+  );
+}
 
 function ChartCard({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
   return (
@@ -97,14 +129,17 @@ export default function AnalyticsPage() {
   const { isLoading } = useEnsureBoardLoaded();
 
   const chrome = CHART_CHROME[theme];
-  const tooltipContentStyle = {
-    borderRadius: 8,
-    border: `1px solid ${chrome.tooltipBorder}`,
-    backgroundColor: chrome.tooltipBg,
-    color: chrome.tooltipText,
-    fontSize: 12,
-    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-  };
+  const tooltipContentStyle = useMemo(
+    () => ({
+      borderRadius: 8,
+      border: `1px solid ${chrome.tooltipBorder}`,
+      backgroundColor: chrome.tooltipBg,
+      color: chrome.tooltipText,
+      fontSize: 12,
+      boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+    }),
+    [chrome]
+  );
 
   const statusDistribution = useMemo(() => getStatusDistribution(tasks), [tasks]);
   const priorityBreakdown = useMemo(() => getPriorityBreakdown(tasks), [tasks]);
@@ -157,7 +192,8 @@ export default function AnalyticsPage() {
               value: slice.value,
             }))}
           />
-          <ResponsiveContainer width="100%" height={120}>
+          <DeferredChart height={120}>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={[statusRow]} layout="vertical" margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
               <XAxis type="number" hide />
               <YAxis type="category" dataKey="name" hide />
@@ -177,6 +213,7 @@ export default function AnalyticsPage() {
               ))}
             </BarChart>
           </ResponsiveContainer>
+          </DeferredChart>
         </ChartCard>
 
         <ChartCard title="Priority breakdown" subtitle="Task priorities within each column">
@@ -187,7 +224,8 @@ export default function AnalyticsPage() {
               { label: "High", color: PRIORITY_COLORS.high },
             ]}
           />
-          <ResponsiveContainer width="100%" height={260}>
+          <DeferredChart height={260}>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={priorityBreakdown} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
               <CartesianGrid stroke={chrome.gridline} strokeDasharray="0" vertical={false} />
               <XAxis
@@ -229,6 +267,7 @@ export default function AnalyticsPage() {
               />
             </BarChart>
           </ResponsiveContainer>
+          </DeferredChart>
         </ChartCard>
 
         <ChartCard title="Sprint velocity" subtitle="Completed vs. total tasks due, grouped by weekly sprint">
@@ -238,7 +277,8 @@ export default function AnalyticsPage() {
               { label: "Total due", color: chrome.contextGray },
             ]}
           />
-          <ResponsiveContainer width="100%" height={260}>
+          <DeferredChart height={260}>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={sprintVelocity} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
               <CartesianGrid stroke={chrome.gridline} strokeDasharray="0" vertical={false} />
               <XAxis dataKey="sprint" tick={{ fill: chrome.axisText, fontSize: 11 }} axisLine={{ stroke: chrome.gridline }} tickLine={false} />
@@ -248,6 +288,7 @@ export default function AnalyticsPage() {
               <Bar dataKey="completed" fill={ACCENT} radius={[4, 4, 0, 0]} barSize={20} animationDuration={600} />
             </BarChart>
           </ResponsiveContainer>
+          </DeferredChart>
         </ChartCard>
 
         <ChartCard title="Completion trend" subtitle="Cumulative completed tasks over time">
@@ -256,7 +297,8 @@ export default function AnalyticsPage() {
               No tasks completed yet — move a card to Done to see the trend.
             </p>
           ) : (
-            <ResponsiveContainer width="100%" height={260}>
+            <DeferredChart height={260}>
+            <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={completionTrend} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
                 <defs>
                   <linearGradient id="completionFill" x1="0" y1="0" x2="0" y2="1">
@@ -280,6 +322,7 @@ export default function AnalyticsPage() {
                 />
               </AreaChart>
             </ResponsiveContainer>
+            </DeferredChart>
           )}
         </ChartCard>
       </div>

@@ -8,12 +8,7 @@ interface MockResult {
   data: unknown;
 }
 
-/**
- * Installs a scripted adapter on both the bare `axios` default export (used by the
- * interceptor's own `/auth/refresh` call) and the `dummyJsonApi` instance, so the
- * whole refresh-and-retry cycle runs through fake, in-memory responses instead of
- * a real network call.
- */
+
 function installMockAdapter(script: Record<string, MockResult[]>) {
   const calls: Record<string, number> = {};
 

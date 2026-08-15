@@ -3,7 +3,9 @@ import { useAuthStore, refreshTokenStorage } from "../../store/authStore";
 import { fetchCurrentUser, refreshSession } from "./authApi";
 
 export function useSessionInit() {
-  const { setSession, finishInitializing, isInitializing } = useAuthStore();
+  const setSession = useAuthStore((s) => s.setSession);
+  const finishInitializing = useAuthStore((s) => s.finishInitializing);
+  const isInitializing = useAuthStore((s) => s.isInitializing);
 
   useEffect(() => {
     let cancelled = false;
