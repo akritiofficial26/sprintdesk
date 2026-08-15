@@ -1,6 +1,7 @@
 import { useAuthStore } from "./store/authStore";
 import { useSessionInit } from "./features/auth/useSessionInit";
 import { FullScreenLoader } from "./components/ui/FullScreenLoader";
+import { ToastContainer } from "./components/ui/Toast";
 import { AppRouter } from "./routes/AppRouter";
 
 function App() {
@@ -11,7 +12,12 @@ function App() {
     return <FullScreenLoader label="Validating your session..." />;
   }
 
-  return <AppRouter />;
+  return (
+    <>
+      <AppRouter />
+      <ToastContainer />
+    </>
+  );
 }
 
 export default App;

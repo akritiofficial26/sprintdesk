@@ -1,5 +1,8 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { NotificationBell } from "../features/notifications/NotificationBell";
+import { ThemeToggle } from "./ui/ThemeToggle";
 
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard" },
@@ -9,8 +12,14 @@ const navItems = [
 
 export function Layout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useAuthStore((s) => s.user);
   const clearSession = useAuthStore((s) => s.clearSession);
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  useEffect(() => {
+    setIsNavOpen(false);
+  }, [location.pathname]);
 
   function handleLogout() {
     clearSession();
@@ -19,14 +28,39 @@ export function Layout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <aside className="fixed left-0 top-0 z-40 flex h-full w-[240px] flex-col border-r border-outline-variant bg-surface-container-low">
-        <div className="mb-md flex items-center gap-md border-b border-outline-variant p-lg">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-on-primary">
-            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
-              view_kanban
-            </span>
+      {isNavOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-inverse-surface/40 md:hidden"
+          onClick={() => setIsNavOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={[
+          "fixed left-0 top-0 z-50 flex h-full w-[240px] flex-col border-r border-outline-variant bg-surface-container-low transition-transform duration-200",
+          isNavOpen ? "translate-x-0" : "-translate-x-full",
+          "md:translate-x-0",
+        ].join(" ")}
+      >
+        <div className="mb-md flex items-center justify-between gap-md border-b border-outline-variant p-lg">
+          <div className="flex items-center gap-md">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-on-primary">
+              <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+                view_kanban
+              </span>
+            </div>
+            <span className="text-headline-sm text-on-surface tracking-tight">SprintDesk</span>
           </div>
-          <span className="text-headline-sm text-on-surface tracking-tight">SprintDesk</span>
+          <button
+            onClick={() => setIsNavOpen(false)}
+            aria-label="Close navigation menu"
+            className="text-on-surface-variant transition-colors hover:text-on-surface md:hidden"
+          >
+            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+              close
+            </span>
+          </button>
         </div>
 
         <nav className="flex-1 space-y-xs px-md" aria-label="Primary">
@@ -79,7 +113,24 @@ export function Layout() {
         </div>
       </aside>
 
-      <div className="pl-[240px]">
+      <div className="md:pl-[240px]">
+        <header className="sticky top-0 z-30 flex items-center gap-md border-b border-outline-variant bg-surface-container-low p-md">
+          <button
+            onClick={() => setIsNavOpen(true)}
+            aria-label="Open navigation menu"
+            aria-expanded={isNavOpen}
+            className="text-on-surface-variant transition-colors hover:text-on-surface md:hidden"
+          >
+            <span className="material-symbols-outlined" aria-hidden="true">
+              menu
+            </span>
+          </button>
+          <span className="text-headline-sm text-on-surface tracking-tight md:hidden">SprintDesk</span>
+          <div className="ml-auto flex items-center gap-md">
+            <ThemeToggle />
+            <NotificationBell />
+          </div>
+        </header>
         <main className="mx-auto max-w-container-max p-lg">
           <Outlet />
         </main>
