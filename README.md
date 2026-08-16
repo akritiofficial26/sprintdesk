@@ -1,119 +1,274 @@
 # SprintDesk
 
-A sprint management dashboard built with React 18/19 + TypeScript (strict) + Vite.
+SprintDesk is a sprint management dashboard for software teams. You log in, manage tasks on a Kanban board, and see charts built from those tasks. It is a single page application built with React and TypeScript.
 
-## Status — Phase 1
+This project was built as a frontend assignment.
 
-**Scope of this phase: project skeleton, the full authentication flow (Task
-01), and the applied SprintDesk design system (light theme).**
-Board, Analytics, and Notifications are placeholder pages, styled to match
-the design system, pending their own build phases.
+## Features
+
+**Authentication**
+
+- Login using the DummyJSON auth API
+- Access token is kept in memory, refresh token is stored in the browser
+- Token refresh happens automatically when the access token expires, and the failed request is sent again
+- Dashboard, board and analytics pages cannot be opened without logging in
+- Session stays active after a page refresh
+- Remember me option keeps you logged in for 30 days
+- Password strength indicator on the login form
+
+**Kanban board**
+
+- Four columns: Backlog, In Progress, Review and Done
+- Drag and drop cards using the mouse or the keyboard
+- Task counts update as cards move
+- Click a card to open a drawer with full details
+- Edit a task and add comments
+- Create tasks with title, column, priority, assignee and due date
+- Delete a task after a confirmation step
+- Filter by priority or assignee
+- Undo the last move
+- Board state is saved in the browser, so it stays after a refresh
+
+**Analytics**
+
+- Task status across the four columns
+- Priority breakdown inside each column
+- Sprint velocity, grouped by the week a task is due
+- Completion trend over time
+- All four charts use real board data and update when the board changes
+
+**Notifications**
+
+- Checks for new items every 15 seconds
+- Bell icon shows the unread count
+- Keeps the last 20 notifications
+- Mark one as read or mark all as read
+- Polling stops when the browser tab is hidden and starts again when you come back
+- A toast appears when something new arrives and the panel is closed
+
+**Other**
+
+- Light and dark theme
+- Works on mobile, tablet and desktop
+- Component library built from scratch, no UI library used
+
+## Tech stack
+
+| Purpose | Library | Version |
+| --- | --- | --- |
+| UI | React | 19.2 |
+| Language | TypeScript (strict mode) | 6.0 |
+| Build tool | Vite | 8.2 |
+| Server data | TanStack Query | 5.101 |
+| App state | Zustand | 5.0 |
+| Styling | Tailwind CSS | 3.4 |
+| Routing | React Router | 7.18 |
+| Charts | Recharts | 3.10 |
+| Drag and drop | dnd-kit | 6.3 |
+| HTTP client | Axios | 1.19 |
+| Testing | Vitest + React Testing Library | 4.1 / 16.3 |
 
 ## Setup
 
+You need Node.js version 20.19 or higher.
+
+Clone the repository:
+
 ```bash
-npm install
-npm run dev         # http://localhost:5173
-npm run build        # production build to dist/
-npm run test          # run unit tests once
-npm run test:watch    # watch mode
+git clone https://github.com/akritiofficial26/sprintdesk.git
+cd sprintdesk
 ```
 
-No environment variables are required — both APIs used (DummyJSON,
-JSONPlaceholder) are public and keyless. `.env.example` documents where
-config would live if that changed.
+Install the packages:
 
-### Test login
+```bash
+npm install
+```
 
-DummyJSON test account: username `emilys`, password `emilyspass`.
-(The login form's "email" field is mapped to DummyJSON's `username` field —
-DummyJSON doesn't support real email login. See `authApi.ts`.)
+Start the development server:
 
-## Design system
+```bash
+npm run dev
+```
 
-The UI implements the **"Velocity Professional" / light** design system
-(`design/velocity_professional_light.DESIGN.md`), sourced from the Stitch
-mockups for this project. All colors, type scale, spacing, and radii in
-`tailwind.config.js` are the literal design tokens from that spec — nothing
-was eyeballed. The dark variant (`design/velocity_professional_dark.DESIGN.md`)
-is included for reference; a light/dark theme switch (a functional
-requirement of the assignment) is not yet wired up — see Known limitations.
+The app runs at http://localhost:5173
 
-Icons use Google's Material Symbols Outlined font, matching the mockups.
+### Environment variables
 
-## Architecture
+No environment variables are needed. Both APIs used in this project are public and do not need an API key.
+
+There is one optional variable in `.env.example`. `VITE_ACCESS_TOKEN_TTL_MINS` sets how long the access token lasts, in minutes. The default is 30. Setting it to 1 makes the token expire quickly, which is useful if you want to see the automatic refresh working.
+
+### Login details
+
+The app uses the DummyJSON test account:
+
+```
+Username: emilys
+Password: emilyspass
+```
+
+The login form field is labelled Email, but the value is sent as a username. DummyJSON does not support login by email.
+
+## Scripts
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Starts the development server |
+| `npm run build` | Type checks the project and builds it into the `dist` folder |
+| `npm run preview` | Serves the built files so you can check the production version |
+| `npm run test` | Runs all tests once |
+| `npm run test:watch` | Runs tests and reruns them when files change |
+| `npm run lint` | Runs the linter |
+
+## Pages
+
+| Route | Page | Access |
+| --- | --- | --- |
+| `/login` | Login form | Public |
+| `/dashboard` | Summary cards, sprint distribution and a sortable table of all tasks | Login required |
+| `/board` | Kanban board | Login required |
+| `/analytics` | Four charts | Login required |
+
+Opening `/` or any unknown URL sends you to the dashboard.
+
+## Folder structure
 
 ```
 src/
   components/
-    ui/           Reusable design-system primitives (Button, Input, FullScreenLoader)
-    Layout.tsx    Authenticated shell: fixed sidebar nav + user card + logout
+    Layout.tsx        Sidebar, header and page frame
+    ui/               Button, Input, Select, Modal, Toast, DataTable,
+                      Skeleton, FullScreenLoader, ThemeToggle
   features/
-    auth/         Login page, auth API calls, session-restore hook, password strength
-    board/        Kanban board (stub — later phase)
-    analytics/    Charts (stub — later phase)
-    notifications/ (later phase)
+    auth/             Login page, auth API calls, session restore
+    board/            Kanban board, task card, column, drawer, modals
+    analytics/        Charts and the functions that calculate chart data
+    dashboard/        Summary cards and the task table
+    notifications/    Bell, panel and the polling hook
   lib/
-    axios.ts      Axios instances + bearer-token/refresh interceptor
+    axios.ts          Axios setup and the token refresh logic
   routes/
-    AppRouter.tsx Route table, lazy-loaded pages
-    ProtectedRoute.tsx  Auth guard
-  store/
-    authStore.ts  Zustand store: access token in memory, refresh token in
-                   localStorage/sessionStorage depending on "Remember me"
-  types/          Shared TS types
-design/           Source design tokens (light + dark DESIGN.md)
+    AppRouter.tsx     Route list
+    ProtectedRoute.tsx  Guard for pages that need a login
+  store/              Five Zustand stores: auth, board, notification, toast, theme
+  types/              Shared TypeScript types
+docs/                 Architecture and API documentation
+design/               Design tokens for light and dark theme
 ```
 
-### Auth flow
+## APIs used
 
-- **Access token**: kept only in memory (Zustand state), never persisted —
-  reduces XSS exfiltration surface vs localStorage.
-- **Refresh token storage**: isolated behind a small `refreshTokenStorage`
-  wrapper so it can be swapped for an httpOnly cookie-based flow later
-  without touching call sites.
-  - **Remember me checked** → refresh token + a 30-day expiry timestamp go
-    into `localStorage`. The session survives closing the browser, and is
-    rejected client-side once the 30-day window lapses.
-  - **Remember me unchecked** → refresh token goes into `sessionStorage`.
-    It survives an in-page refresh (per the assignment's requirement) but is
-    cleared the moment the tab/browser closes.
-- **Interceptor** (`lib/axios.ts`): attaches `Authorization: Bearer <token>`
-  to every DummyJSON request. On a 401, it refreshes the token once, replays
-  the original request, and queues any other requests that 401 while a
-  refresh is already in flight (avoids firing parallel refresh calls).
-- **Session restore on page load**: `useSessionInit` reads the stored
-  refresh token (whichever store currently holds it), exchanges it for a new
-  access token, fetches `/auth/me`, and rehydrates the store — this is what
-  keeps you logged in across a refresh. A full-screen loader is shown until
-  this resolves.
-- **Route protection**: `ProtectedRoute` redirects unauthenticated users to
-  `/login` (preserving the intended destination); `/login` itself redirects
-  away if already authenticated.
+Two public APIs. Neither one needs a key.
 
-### Bonus items implemented
+**DummyJSON** (`https://dummyjson.com`)
 
-- **Remember me** with real (not cosmetic) 30-day persistence, described
-  above.
-- **Password strength indicator** (`features/auth/passwordStrength.ts`) —
-  a lightweight, dependency-free heuristic (length, case mix, digits,
-  symbols) driving a live strength bar under the password field.
+| Endpoint | Purpose |
+| --- | --- |
+| `POST /auth/login` | Log in and get the access and refresh tokens |
+| `POST /auth/refresh` | Get a new access token |
+| `GET /auth/me` | Get the logged in user |
 
-## Known limitations (to be addressed in later phases)
+**JSONPlaceholder** (`https://jsonplaceholder.typicode.com`)
 
-- Token expiry is currently simulated with a short `expiresInMins: 1` on
-  login purely to make the refresh flow observable during a demo — this
-  should be a normal duration in a real deployment.
-- Board, Analytics, and Notifications are placeholder pages, styled to the
-  design system, pending their own build phases.
-- Light/dark theme switching (a functional requirement) is not implemented
-  yet — the app currently ships the light theme only. Both token sets exist
-  in `design/`, so wiring up `dark:` classes + a toggle is scoped, not
-  blocked.
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /todos?_limit=30` | The 30 tasks shown on the board |
+| `GET /users` | Names used as task assignees |
+| `GET /posts` | Items treated as notifications |
 
-## Tech stack
+The todos API only returns an id, a title and a completed flag. Priority, assignee and due date are not part of that data, so they are worked out from the task id using a fixed rule. The same task always gets the same values, so the board looks the same every time it loads.
 
-React 19 (satisfies "18+"), TypeScript strict, Vite, TanStack Query v5,
-Zustand, Tailwind CSS v3 (custom design tokens, no component library),
-React Router v6/v7, @dnd-kit/core (installed, board not yet built),
-Recharts, Vitest + React Testing Library.
+Full request and response details are in `docs/API.md` and `docs/openapi.yaml`.
+
+## How the data flows
+
+The board is fetched once when you open any of the three private pages. It is then saved into a Zustand store, and the dashboard and analytics pages read from that same store.
+
+This means moving a card on the board updates the dashboard numbers and the analytics charts straight away, without any extra API call.
+
+The store is saved to localStorage. When you refresh the page, the saved board is loaded instead of fetching the API again, so your changes are not lost.
+
+## State management
+
+The project uses two tools for two different kinds of data.
+
+TanStack Query handles data coming from an API. It takes care of caching, loading and error states, and repeating the notification request on a timer.
+
+Zustand holds data the app owns after it arrives. There are five stores:
+
+| Store | Holds | Saved in browser |
+| --- | --- | --- |
+| auth | User details and access token | Only the refresh token |
+| board | Tasks, column order, filters, last move | Yes |
+| notification | Last 20 notifications and read state | Yes |
+| toast | Messages currently on screen | No |
+| theme | Light or dark | Yes |
+
+## Theming
+
+Colours are not written directly inside components. Every component uses a name such as `surface`, `on-surface` or `primary`, and each name has one value for the light theme and one for the dark theme. Adding the `dark` class to the page changes all of them together.
+
+A small script in `index.html` reads the saved theme before the page is drawn, so the correct theme shows straight away without a flash of the wrong colours.
+
+## Testing
+
+There are 77 tests across 12 files. Run them with `npm run test`.
+
+| File | Covers |
+| --- | --- |
+| `store/boardStore.test.ts` | Adding, moving and deleting tasks, and undo |
+| `store/authStore.test.ts` | Where the refresh token is saved and the 30 day expiry |
+| `store/notificationStore.test.ts` | Ignoring duplicates, the 20 item limit and read state |
+| `store/toastStore.test.ts` | Showing, dismissing and auto dismissing toasts |
+| `lib/axios.test.ts` | Token refresh, retry, and what happens when refresh fails |
+| `features/analytics/analyticsSelectors.test.ts` | The four chart calculations |
+| `components/ui/useToast.test.tsx` | The useToast hook and the toast container |
+| `components/ui/DataTable.test.tsx` | Sorting, keyboard use and screen reader labels |
+| `components/ui/Modal.test.tsx` | Focus staying inside the dialog, Escape and backdrop clicks |
+| `components/ui/Skeleton.test.tsx` | Loading placeholder behaviour |
+| `components/ui/FullScreenLoader.test.tsx` | The full screen loading state |
+| `features/dashboard/DashboardPage.test.tsx` | Summary cards, the task table and sorting |
+
+## Performance
+
+- Each page is loaded only when you open it, so the charts library is downloaded only when you visit the analytics page
+- `React.memo` is used on the task card and the board column, so editing one task redraws one card instead of all of them
+- `useCallback` is used for the functions passed to those components, otherwise the memo would not work
+- `useMemo` is used for the chart calculations, the filtered columns and the table sorting
+- The board is fetched once and shared by three pages
+- The icon font is loaded with only the icons this app uses, which brings it down from about 4 MB to about 4 KB
+- Loading skeletons are the same size as the real content, so nothing jumps when the data arrives
+
+## Accessibility
+
+- Drag and drop works with the keyboard. Focus a drag handle, press Space to pick the card up, use the arrow keys to move it, press Space to drop it and Escape to cancel
+- Modals and the task drawer keep focus inside them and return focus to the button that opened them
+- Every form field has a label
+- Icon only buttons have a hidden text label for screen readers
+- The sortable table announces which column is sorted and in which direction
+- Toasts are announced by screen readers
+- The loading animation stops for users who have reduced motion turned on
+
+## Documentation
+
+| File | Contents |
+| --- | --- |
+| `docs/ARCHITECTURE.md` | How the project is structured and how data moves through it |
+| `docs/API.md` | Every endpoint with request and response examples |
+| `docs/openapi.yaml` | The same API details in OpenAPI format |
+
+## Known limitations
+
+- Task changes are saved in the browser only. JSONPlaceholder accepts changes but does not store them, so a real backend would be needed for changes to sync across devices.
+- The notifications API returns a fixed list of 100 posts that never changes. Polling the same 5 posts would only give one set of notifications and then stop, so the app moves through the list a few at a time instead. This is written as a simulation, not a real feed.
+- The card position is decided when you drop it, not previewed while you drag it between columns.
+- If a filter is active and you drop a card on the empty part of a column, it goes to the end of the full column instead of the filtered list.
+- The Lighthouse score has not been measured yet. The optimisations listed above are done, but the score should be checked against a deployed build before quoting a number.
+
+## What I would add next
+
+- A real backend so task changes are saved properly
+- End to end tests using Playwright, since the current tests do not cover a full user journey
+- A live preview while dragging a card between columns
+- WebSockets for notifications instead of polling

@@ -52,6 +52,13 @@ export default {
         "success-container": withOpacity("--color-success-container"),
         warning: withOpacity("--color-warning"),
         "warning-container": withOpacity("--color-warning-container"),
+        // Solid call-to-action buttons only. Kept separate from `primary` on
+        // purpose: `primary` also paints the sidebar mark, the active nav item,
+        // focus rings, input focus borders, and the dashboard accents, none of
+        // which should follow the button colour.
+        button: withOpacity("--color-button"),
+        "button-hover": withOpacity("--color-button-hover"),
+        "on-button": withOpacity("--color-on-button"),
       },
       fontFamily: {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
