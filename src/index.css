@@ -17,12 +17,12 @@
   --color-inverse-on-surface: 240, 241, 242;
   --color-outline: 118, 117, 134;
   --color-outline-variant: 199, 196, 215;
-  --color-surface-tint: 73, 75, 214;
-  --color-primary: 70, 72, 212;
+  --color-surface-tint: 2, 31, 84;
+  --color-primary: 2, 31, 84;
   --color-on-primary: 255, 255, 255;
-  --color-primary-container: 96, 99, 238;
-  --color-on-primary-container: 255, 251, 255;
-  --color-inverse-primary: 192, 193, 255;
+  --color-primary-container: 10, 58, 130;
+  --color-on-primary-container: 255, 255, 255;
+  --color-inverse-primary: 141, 181, 232;
   --color-secondary: 88, 95, 108;
   --color-on-secondary: 255, 255, 255;
   --color-secondary-container: 220, 226, 243;
@@ -35,10 +35,10 @@
   --color-on-error: 255, 255, 255;
   --color-error-container: 255, 218, 214;
   --color-on-error-container: 147, 0, 10;
-  --color-primary-fixed: 225, 224, 255;
-  --color-primary-fixed-dim: 192, 193, 255;
-  --color-on-primary-fixed: 7, 0, 108;
-  --color-on-primary-fixed-variant: 47, 46, 190;
+  --color-primary-fixed: 214, 228, 247;
+  --color-primary-fixed-dim: 141, 181, 232;
+  --color-on-primary-fixed: 1, 16, 43;
+  --color-on-primary-fixed-variant: 10, 58, 130;
   --color-background: 248, 249, 250;
   --color-on-background: 25, 28, 29;
   --color-surface-variant: 225, 227, 228;
@@ -46,6 +46,10 @@
   --color-success-container: 240, 253, 244;
   --color-warning: 146, 64, 14;
   --color-warning-container: 255, 251, 235;
+  
+  --color-button: 2, 31, 84;
+  --color-button-hover: 10, 58, 130;
+  --color-on-button: 255, 255, 255;
 }
 
 :root.dark {
@@ -63,12 +67,13 @@
   --color-inverse-on-surface: 48, 48, 56;
   --color-outline: 144, 143, 160;
   --color-outline-variant: 70, 69, 84;
-  --color-surface-tint: 192, 193, 255;
-  --color-primary: 192, 193, 255;
-  --color-on-primary: 16, 0, 169;
-  --color-primary-container: 128, 131, 255;
-  --color-on-primary-container: 13, 0, 150;
-  --color-inverse-primary: 73, 75, 214;
+ 
+  --color-surface-tint: 147, 184, 232;
+  --color-primary: 147, 184, 232;
+  --color-on-primary: 1, 25, 61;
+  --color-primary-container: 46, 107, 196;
+  --color-on-primary-container: 255, 255, 255;
+  --color-inverse-primary: 2, 31, 84;
   --color-secondary: 185, 200, 222;
   --color-on-secondary: 35, 49, 67;
   --color-secondary-container: 57, 72, 90;
@@ -81,10 +86,10 @@
   --color-on-error: 105, 0, 5;
   --color-error-container: 147, 0, 10;
   --color-on-error-container: 255, 218, 214;
-  --color-primary-fixed: 225, 224, 255;
-  --color-primary-fixed-dim: 192, 193, 255;
-  --color-on-primary-fixed: 7, 0, 108;
-  --color-on-primary-fixed-variant: 47, 46, 190;
+  --color-primary-fixed: 214, 228, 247;
+  --color-primary-fixed-dim: 141, 181, 232;
+  --color-on-primary-fixed: 1, 16, 43;
+  --color-on-primary-fixed-variant: 10, 58, 130;
   --color-background: 19, 19, 27;
   --color-on-background: 228, 225, 237;
   --color-surface-variant: 52, 52, 61;
@@ -92,6 +97,10 @@
   --color-success-container: 5, 46, 22;
   --color-warning: 252, 211, 77;
   --color-warning-container: 69, 26, 3;
+ 
+  --color-button: 51, 102, 179;
+  --color-button-hover: 68, 120, 199;
+  --color-on-button: 255, 255, 255;
 }
 
 html {
