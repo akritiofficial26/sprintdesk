@@ -4,6 +4,7 @@ import type { ColumnId, Priority, Task } from "../../../types";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import { Select } from "../../../components/ui/Select";
+import { useFocusTrap } from "../../../components/ui/useFocusTrap";
 import { COLUMN_ORDER, COLUMN_TITLES, useBoardStore } from "../../../store/boardStore";
 import { useAuthStore } from "../../../store/authStore";
 
@@ -27,6 +28,7 @@ export function TaskDrawer({ task, onClose, onRequestDelete }: TaskDrawerProps) 
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState<Task | null>(task);
   const [commentText, setCommentText] = useState("");
+  const drawerRef = useFocusTrap<HTMLDivElement>(task !== null);
 
   useEffect(() => {
     setDraft(task);
@@ -68,10 +70,12 @@ export function TaskDrawer({ task, onClose, onRequestDelete }: TaskDrawerProps) 
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-inverse-surface/40" onClick={onClose} aria-hidden="true" />
       <div
+        ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-label="Task details"
-        className="relative z-10 flex h-full w-full max-w-md flex-col gap-lg overflow-y-auto border-l border-outline-variant bg-surface-bright p-lg shadow-subtle"
+        tabIndex={-1}
+        className="relative z-10 flex h-full w-full max-w-md flex-col gap-lg overflow-y-auto border-l border-outline-variant bg-surface-bright p-lg shadow-subtle outline-none"
       >
         <div className="flex items-start justify-between gap-sm">
           {isEditing ? (

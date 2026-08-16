@@ -14,7 +14,9 @@ export function AppRouter() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   return (
-    <Suspense fallback={<FullScreenLoader />}>
+    <Suspense
+      fallback={<FullScreenLoader variant={isAuthenticated ? "app" : "auth"} />}
+    >
       <Routes>
         <Route
           path="/login"

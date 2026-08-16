@@ -7,8 +7,32 @@
     <meta name="description" content="SprintDesk — a sprint management dashboard for software teams." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      Both API origins sit on the LCP critical path (session restore, then board
+      data), so pay the DNS + TLS handshake up front in parallel with the JS
+      download rather than serially once the first request fires.
+    -->
+    <link rel="preconnect" href="https://dummyjson.com" crossorigin />
+    <link rel="preconnect" href="https://jsonplaceholder.typicode.com" crossorigin />
+    <!--
+      Fonts are requested as fixed instances, not variable ranges, and the icon
+      font is subset to only the glyphs this app renders.
+
+      index.css pins Material Symbols to a single point in the variation space
+      (FILL 0, wght 400, GRAD 0, opsz 24), so the full 4-axis range was 3.96 MB
+      of render-blocking font for one instance. Pinning the axes cut that to
+      320 KB; `icon_names` subsetting cuts it to ~4 KB.
+
+      IMPORTANT: `icon_names` below must stay in sync with the ligatures used in
+      the app — an icon that is not listed here silently renders as its literal
+      ligature text. Keep the list alphabetical. Current usages live in Layout,
+      DataTable, Toast, Input, Button, Modal, Select, FullScreenLoader,
+      LoginPage, NotificationBell/Panel and the board components.
+
+      JetBrains Mono is 400-only (the sole `text-code-sm` token).
+    -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,analytics,arrow_downward,arrow_forward,arrow_upward,chat_bubble,check_circle,close,dashboard,delete,drag_indicator,edit,error,expand_more,info,lock,logout,mail,menu,notifications,person,progress_activity,undo,unfold_more,view_kanban,visibility,visibility_off&display=swap"
       rel="stylesheet"
     />
     <title>SprintDesk</title>

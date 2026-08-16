@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { ColumnId, Task } from "../../../types";
@@ -12,7 +13,7 @@ interface BoardColumnProps {
   onAddTask: (columnId: ColumnId) => void;
 }
 
-export function BoardColumn({ columnId, title, taskIds, tasks, onOpenTask, onAddTask }: BoardColumnProps) {
+function BoardColumnComponent({ columnId, title, taskIds, tasks, onOpenTask, onAddTask }: BoardColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: columnId });
 
   return (
@@ -58,3 +59,12 @@ export function BoardColumn({ columnId, title, taskIds, tasks, onOpenTask, onAdd
     </div>
   );
 }
+
+/**
+ * BoardPage holds all the drawer/modal open-state, so any of those toggles
+ * would otherwise re-render all four columns and every card beneath them.
+ * Memoizing here means opening a task drawer touches no board DOM at all.
+ */
+export const BoardColumn = memo(BoardColumnComponent);
+
+BoardColumn.displayName = "BoardColumn";

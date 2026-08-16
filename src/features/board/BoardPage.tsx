@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -78,37 +78,52 @@ export default function BoardPage() {
     return result;
   }, [columns, tasks, filters]);
 
-  function handleDragStart(event: DragStartEvent) {
-    const task = tasks[Number(event.active.id)];
-    setActiveTask(task ?? null);
-  }
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const task = tasks[Number(event.active.id)];
+      setActiveTask(task ?? null);
+    },
+    [tasks]
+  );
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    setActiveTask(null);
-    if (!over) return;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      setActiveTask(null);
+      if (!over) return;
 
-    const activeId = Number(active.id);
-    const overId = String(over.id);
+      const activeId = Number(active.id);
+      const overId = String(over.id);
 
-    if ((COLUMN_ORDER as string[]).includes(overId)) {
-      const targetColumn = overId as ColumnId;
-      moveTask(activeId, targetColumn, columns[targetColumn].length);
-      return;
-    }
+      if ((COLUMN_ORDER as string[]).includes(overId)) {
+        const targetColumn = overId as ColumnId;
+        moveTask(activeId, targetColumn, columns[targetColumn].length);
+        return;
+      }
 
-    const overTask = tasks[Number(overId)];
-    if (!overTask) return;
-    const targetIndex = columns[overTask.columnId].indexOf(overTask.id);
-    moveTask(activeId, overTask.columnId, targetIndex);
-  }
+      const overTask = tasks[Number(overId)];
+      if (!overTask) return;
+      const targetIndex = columns[overTask.columnId].indexOf(overTask.id);
+      moveTask(activeId, overTask.columnId, targetIndex);
+    },
+    [columns, tasks, moveTask]
+  );
 
-  function handleConfirmDelete() {
+  // Passed to the memoized BoardColumn/TaskCard tree — an inline arrow here
+  // would give every card a new prop on each BoardPage render and defeat both
+  // memo boundaries.
+  const handleOpenTask = useCallback((task: Task) => setOpenTaskId(task.id), []);
+  const handleCloseTask = useCallback(() => setOpenTaskId(null), []);
+  const handleRequestDelete = useCallback((task: Task) => setDeleteTaskId(task.id), []);
+  const handleCancelDelete = useCallback(() => setDeleteTaskId(null), []);
+  const handleCloseAddModal = useCallback(() => setAddModalColumn(null), []);
+
+  const handleConfirmDelete = useCallback(() => {
     if (!taskPendingDelete) return;
     deleteTask(taskPendingDelete.id);
-    if (openTaskId === taskPendingDelete.id) setOpenTaskId(null);
+    setOpenTaskId((current) => (current === taskPendingDelete.id ? null : current));
     setDeleteTaskId(null);
-  }
+  }, [taskPendingDelete, deleteTask]);
 
   if (isError) {
     return (
@@ -163,7 +178,7 @@ export default function BoardPage() {
                 title={COLUMN_TITLES[columnId]}
                 taskIds={filteredColumns[columnId]}
                 tasks={tasks}
-                onOpenTask={(task) => setOpenTaskId(task.id)}
+                onOpenTask={handleOpenTask}
                 onAddTask={setAddModalColumn}
               />
             ))}
@@ -173,22 +188,18 @@ export default function BoardPage() {
         </DndContext>
       )}
 
-      <TaskDrawer
-        task={openTask}
-        onClose={() => setOpenTaskId(null)}
-        onRequestDelete={(task) => setDeleteTaskId(task.id)}
-      />
+      <TaskDrawer task={openTask} onClose={handleCloseTask} onRequestDelete={handleRequestDelete} />
 
       <AddTaskModal
         isOpen={addModalColumn !== null}
         defaultColumnId={addModalColumn ?? "backlog"}
-        onClose={() => setAddModalColumn(null)}
+        onClose={handleCloseAddModal}
       />
 
       <DeleteConfirmModal
         isOpen={taskPendingDelete !== null}
         taskTitle={taskPendingDelete?.title ?? ""}
-        onCancel={() => setDeleteTaskId(null)}
+        onCancel={handleCancelDelete}
         onConfirm={handleConfirmDelete}
       />
     </div>

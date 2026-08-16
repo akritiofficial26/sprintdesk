@@ -1,5 +1,6 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useFocusTrap } from "./useFocusTrap";
 
 interface ModalProps {
   isOpen: boolean;
@@ -10,7 +11,7 @@ interface ModalProps {
 }
 
 export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) {
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -20,7 +21,6 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
     }
 
     document.addEventListener("keydown", handleKeyDown);
-    dialogRef.current?.focus();
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
