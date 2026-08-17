@@ -256,19 +256,7 @@ There are 77 tests across 12 files. Run them with `npm run test`.
 | --- | --- |
 | `docs/ARCHITECTURE.md` | How the project is structured and how data moves through it |
 | `docs/API.md` | Every endpoint with request and response examples |
-| `docs/openapi.yaml` | The same API details in OpenAPI format |
 
-## Known limitations
 
-- Task changes are saved in the browser only. JSONPlaceholder accepts changes but does not store them, so a real backend would be needed for changes to sync across devices.
-- The notifications API returns a fixed list of 100 posts that never changes. Polling the same 5 posts would only give one set of notifications and then stop, so the app moves through the list a few at a time instead. This is written as a simulation, not a real feed.
-- The card position is decided when you drop it, not previewed while you drag it between columns.
-- If a filter is active and you drop a card on the empty part of a column, it goes to the end of the full column instead of the filtered list.
-- The Lighthouse score has not been measured yet. The optimisations listed above are done, but the score should be checked against a deployed build before quoting a number.
 
-## What I would add next
 
-- A real backend so task changes are saved properly
-- End to end tests using Playwright, since the current tests do not cover a full user journey
-- A live preview while dragging a card between columns
-- WebSockets for notifications instead of polling
