@@ -68,7 +68,6 @@ describe("Modal", () => {
     const dialog = screen.getByRole("dialog");
     const behind = screen.getByRole("button", { name: "Behind the modal" });
 
-    // Walk past the last control — focus must wrap, not escape.
     for (let i = 0; i < 6; i += 1) {
       await user.tab();
       expect(behind).not.toHaveFocus();

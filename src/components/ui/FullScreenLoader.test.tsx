@@ -50,7 +50,6 @@ describe("FullScreenLoader", () => {
     const auth = render(<FullScreenLoader variant="auth" />).container;
     const authPlaceholders = auth.querySelectorAll(".animate-pulse").length;
 
-    // The two variants mirror different layouts, so they are not the same tree.
     expect(appPlaceholders).not.toBe(authPlaceholders);
     expect(appPlaceholders).toBeGreaterThan(authPlaceholders);
   });

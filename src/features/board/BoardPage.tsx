@@ -109,9 +109,6 @@ export default function BoardPage() {
     [columns, tasks, moveTask]
   );
 
-  // Passed to the memoized BoardColumn/TaskCard tree — an inline arrow here
-  // would give every card a new prop on each BoardPage render and defeat both
-  // memo boundaries.
   const handleOpenTask = useCallback((task: Task) => setOpenTaskId(task.id), []);
   const handleCloseTask = useCallback(() => setOpenTaskId(null), []);
   const handleRequestDelete = useCallback((task: Task) => setDeleteTaskId(task.id), []);

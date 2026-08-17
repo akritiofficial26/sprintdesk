@@ -25,8 +25,7 @@ describe("Skeleton", () => {
   });
 
   it("drops the default radius when the caller supplies one", () => {
-    // `.rounded-lg` is emitted after `.rounded-full` in this project's
-    // stylesheet, so keeping both would render a circle as a rounded square.
+    
     const { container } = render(<Skeleton className="h-8 w-8 rounded-full" />);
     const classes = classesOf(container);
     expect(classes).toContain("rounded-full");

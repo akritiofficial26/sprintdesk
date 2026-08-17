@@ -35,8 +35,7 @@ function seedBoard(tasks: Task[]) {
     byId[t.id] = t;
     columns[t.columnId].push(t.id);
   }
-  // hasLoaded: true keeps useEnsureBoardLoaded's query disabled, so this test
-  // renders against seeded state without touching the network.
+  
   useBoardStore.setState({ tasks: byId, columns, hasLoaded: true });
 }
 
@@ -49,7 +48,7 @@ function renderDashboard() {
   );
 }
 
-/** Body rows of the sprint-tasks table, first cell (the task title). */
+
 function tableTitles(): string[] {
   return within(screen.getByRole("table"))
     .getAllByRole("row")
@@ -95,7 +94,7 @@ describe("DashboardPage", () => {
 
     await user.click(screen.getByRole("button", { name: "Priority" }));
 
-    // Alphabetical would be high, high, low, medium.
+   
     const priorities = within(screen.getByRole("table"))
       .getAllByRole("row")
       .slice(1)

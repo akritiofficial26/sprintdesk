@@ -39,7 +39,7 @@ function renderTable(props: Partial<Parameters<typeof DataTable<Row>>[0]> = {}) 
   );
 }
 
-/** Body rows only — `getAllByRole("row")` also returns the header row. */
+
 function titleColumn(): string[] {
   return screen
     .getAllByRole("row")

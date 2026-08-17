@@ -92,13 +92,6 @@ function TaskCardComponent({ task, onOpen }: TaskCardProps) {
   );
 }
 
-/**
- * Up to 30 cards are mounted at once, and each one runs `useSortable` — the
- * most expensive hook on the board. The store keeps the identity of every task
- * object it did not touch (`{...state.tasks, [id]: next}`), so a reference
- * check is enough: editing or dragging one task re-renders one card instead of
- * all of them. Requires `onOpen` to be referentially stable — see BoardPage.
- */
 export const TaskCard = memo(TaskCardComponent);
 
 TaskCard.displayName = "TaskCard";

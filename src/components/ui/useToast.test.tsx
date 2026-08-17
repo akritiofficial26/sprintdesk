@@ -16,9 +16,6 @@ describe("useToast", () => {
 
     rerender();
 
-    // Callers pass these straight into effect dependency arrays
-    // (see useNotificationPolling), so a new identity per render would
-    // re-fire those effects on every render.
     expect(result.current.showToast).toBe(initial.showToast);
     expect(result.current.dismissToast).toBe(initial.dismissToast);
   });

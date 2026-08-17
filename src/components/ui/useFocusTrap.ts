@@ -9,14 +9,6 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(",");
 
-/**
- * Keeps keyboard focus inside an open dialog and hands it back where it came
- * from on close — the two halves of WCAG 2.4.3 that `role="dialog"` alone does
- * not give you. Without the trap, Tab walks straight out of the dialog and into
- * the page behind it, which is still rendered and still clickable.
- *
- * Returns the ref to attach to the dialog container.
- */
 export function useFocusTrap<T extends HTMLElement>(isOpen: boolean) {
   const containerRef = useRef<T>(null);
 
@@ -26,8 +18,7 @@ export function useFocusTrap<T extends HTMLElement>(isOpen: boolean) {
     const container = containerRef.current;
     if (!container) return;
 
-    // Remember who had focus so it can be restored on close — otherwise focus
-    // resets to <body> and keyboard users lose their place on the page.
+  
     const previouslyFocused = document.activeElement as HTMLElement | null;
 
     const focusables = () =>
@@ -35,8 +26,7 @@ export function useFocusTrap<T extends HTMLElement>(isOpen: boolean) {
         (el) => el.offsetParent !== null || el === document.activeElement
       );
 
-    // Prefer the first real control; fall back to the container itself
-    // (which carries tabIndex={-1}) when the dialog has none yet.
+   
     (focusables()[0] ?? container).focus();
 
     function handleKeyDown(event: KeyboardEvent) {

@@ -1,17 +1,11 @@
 import { memo } from "react";
 import { Skeleton } from "./Skeleton";
 
-/**
- * Stable module-scope keys: the loader renders while the main thread is already
- * busy (session restore, lazy-chunk parse), so it allocates nothing per render.
- */
+
 const NAV_ROWS = [0, 1, 2];
 const SUMMARY_CARDS = [0, 1, 2, 3];
 
-/**
- * Mirrors `Layout` + the dashboard grid, so the skeleton occupies the same
- * boxes the real UI lands in and the swap costs no layout shift (CLS).
- */
+
 function AppShellSkeleton() {
   return (
     <div className="min-h-screen bg-background">
@@ -64,7 +58,6 @@ function AppShellSkeleton() {
   );
 }
 
-/** Mirrors the login card, for the unauthenticated lazy-route fallback. */
 function AuthSkeleton() {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background p-gutter">
@@ -87,18 +80,11 @@ function AuthSkeleton() {
 
 interface FullScreenLoaderProps {
   label?: string;
-  /** `"app"` renders the authenticated shell; `"auth"` renders the login card. */
+
   variant?: "app" | "auth";
 }
 
-/**
- * The app's full-screen loading state — a skeleton of the layout the user is
- * about to land on, rather than a spinner, so the wait previews real structure
- * instead of just signalling "busy".
- *
- * The placeholders themselves are `aria-hidden` (see `Skeleton`); the visually
- * hidden label is what assistive tech announces from the live region.
- */
+
 function FullScreenLoaderComponent({ label = "Loading...", variant = "app" }: FullScreenLoaderProps) {
   return (
     <div role="status" aria-live="polite" aria-busy="true">
@@ -108,8 +94,7 @@ function FullScreenLoaderComponent({ label = "Loading...", variant = "app" }: Fu
   );
 }
 
-// Both call sites sit above frequently-updating state (auth store, router), so
-// the whole placeholder tree is skipped on re-render while it is on screen.
+
 export const FullScreenLoader = memo(FullScreenLoaderComponent);
 
 FullScreenLoader.displayName = "FullScreenLoader";
