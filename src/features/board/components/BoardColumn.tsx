@@ -19,7 +19,7 @@ function BoardColumnComponent({ columnId, title, taskIds, tasks, onOpenTask, onA
   return (
     <div
       ref={setNodeRef}
-      className="flex w-[280px] shrink-0 flex-col gap-md rounded-lg bg-surface-container-low p-md sm:w-[300px]"
+      className="flex w-[280px] shrink-0 flex-col gap-md rounded-lg bg-surface-container-low p-md sm:w-[300px] md:min-h-0"
     >
       <div className="flex items-center justify-between">
         <h2 className="text-body-lg font-semibold text-on-surface">{title}</h2>
@@ -35,6 +35,10 @@ function BoardColumnComponent({ columnId, title, taskIds, tasks, onOpenTask, onA
         <div
           className={[
             "flex min-h-[80px] flex-1 flex-col gap-sm rounded-lg p-xs transition-colors",
+            // The only scroll region in the column: the heading and the "Add
+            // task" button sit outside it and stay put. Lifted below `md`,
+            // where the page scrolls as a whole instead.
+            "md:min-h-0 md:overflow-y-auto",
             isOver ? "bg-primary-container/20" : "",
           ].join(" ")}
         >

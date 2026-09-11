@@ -127,7 +127,7 @@ export default function BoardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-lg">
+    <div className="flex flex-col gap-lg md:h-full md:min-h-0">
       <div className="flex flex-wrap items-start justify-between gap-md">
         <div>
           <h1 className="text-headline-md text-on-surface">Sprint Board</h1>
@@ -146,7 +146,7 @@ export default function BoardPage() {
       <BoardFilters />
 
       {isLoading && !hasLoaded ? (
-        <div className="flex gap-md overflow-x-auto pb-sm">
+        <div className="flex gap-md overflow-x-auto pb-sm md:min-h-0 md:flex-1">
           {COLUMN_ORDER.map((columnId) => (
             <div key={columnId} className="flex w-[280px] shrink-0 flex-col gap-sm">
               <Skeleton className="h-6 w-24" />
@@ -164,7 +164,7 @@ export default function BoardPage() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex gap-md overflow-x-auto pb-sm">
+          <div className="flex items-stretch gap-md overflow-x-auto pb-sm md:min-h-0 md:flex-1">
             {COLUMN_ORDER.map((columnId) => (
               <BoardColumn
                 key={columnId}

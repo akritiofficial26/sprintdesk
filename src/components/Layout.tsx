@@ -4,6 +4,14 @@ import { useAuthStore } from "../store/authStore";
 import { NotificationBell } from "../features/notifications/NotificationBell";
 import { ThemeToggle } from "./ui/ThemeToggle";
 
+/**
+ * Routes that own the viewport instead of growing the document: the page is
+ * pinned to the window height and scrolling happens inside the page itself.
+ * Only applied from `md` up - on a phone a locked-height board leaves the
+ * columns too short to be useful, so there we keep the normal page scroll.
+ */
+const FULL_HEIGHT_ROUTES = ["/board"];
+
 const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard" },
   { to: "/board", label: "Sprint Board", icon: "view_kanban" },
@@ -17,6 +25,8 @@ export function Layout() {
   const clearSession = useAuthStore((s) => s.clearSession);
   const [isNavOpen, setIsNavOpen] = useState(false);
 
+  const isFullHeight = FULL_HEIGHT_ROUTES.some((route) => location.pathname.startsWith(route));
+
   useEffect(() => {
     setIsNavOpen(false);
   }, [location.pathname]);
@@ -27,7 +37,12 @@ export function Layout() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div
+      className={[
+        "min-h-screen bg-background",
+        isFullHeight ? "md:h-screen md:overflow-hidden" : "",
+      ].join(" ")}
+    >
       {isNavOpen && (
         <div
           className="fixed inset-0 z-40 bg-inverse-surface/40 md:hidden"
@@ -113,8 +128,13 @@ export function Layout() {
         </div>
       </aside>
 
-      <div className="md:pl-[240px]">
-        <header className="sticky top-0 z-30 flex items-center gap-md border-b border-outline-variant bg-surface-container-low p-md">
+      <div
+        className={[
+          "md:pl-[240px]",
+          isFullHeight ? "md:flex md:h-full md:flex-col md:overflow-hidden" : "",
+        ].join(" ")}
+      >
+        <header className="sticky top-0 z-30 flex shrink-0 items-center gap-md border-b border-outline-variant bg-surface-container-low p-md">
           <button
             onClick={() => setIsNavOpen(true)}
             aria-label="Open navigation menu"
@@ -131,7 +151,12 @@ export function Layout() {
             <NotificationBell />
           </div>
         </header>
-        <main className="mx-auto max-w-container-max p-lg">
+        <main
+          className={[
+            "mx-auto w-full max-w-container-max p-lg",
+            isFullHeight ? "md:min-h-0 md:flex-1 md:overflow-hidden" : "",
+          ].join(" ")}
+        >
           <Outlet />
         </main>
       </div>
