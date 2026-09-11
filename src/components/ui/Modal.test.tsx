@@ -118,7 +118,6 @@ describe("Modal", () => {
     render(<OpenableModal onClose={onClose} />);
     await user.click(screen.getByRole("button", { name: "Open modal" }));
 
-    // The backdrop is aria-hidden by design, so it has no role to query by.
     const backdrop = document.querySelector('[aria-hidden="true"].absolute');
     await user.click(backdrop as Element);
 

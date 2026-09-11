@@ -93,7 +93,6 @@ describe("DataTable", () => {
 
     await user.click(screen.getByRole("button", { name: "Points" }));
 
-    // Lexical ordering would put "13" before "3".
     expect(titleColumn()).toEqual([
       "Ship analytics",
       "Write the sprint spec",
@@ -152,7 +151,7 @@ describe("DataTable", () => {
   it("shows placeholder rows while loading, and no data", () => {
     renderTable({ isLoading: true, data: rows });
 
-    expect(screen.getAllByRole("row")).toHaveLength(6); // header + 5 skeleton rows
+    expect(screen.getAllByRole("row")).toHaveLength(6);
     expect(screen.queryByText("Write the sprint spec")).not.toBeInTheDocument();
   });
 
@@ -160,6 +159,6 @@ describe("DataTable", () => {
     renderTable({ data: [], emptyMessage: "No sprint tasks yet" });
 
     expect(screen.getByText("No sprint tasks yet")).toBeInTheDocument();
-    expect(screen.getAllByRole("row")).toHaveLength(2); // header + the empty-state row
+    expect(screen.getAllByRole("row")).toHaveLength(2);
   });
 });

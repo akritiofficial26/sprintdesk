@@ -14,11 +14,6 @@ const PRIORITY_BADGE: Record<Task["priority"], string> = {
 
 const PRIORITY_RANK: Record<Task["priority"], number> = { low: 0, medium: 1, high: 2 };
 
-/**
- * Declared at module scope, not inside the component: the array identity is a
- * dependency of DataTable's internal sort memo, so rebuilding it every render
- * would invalidate that memo on every render.
- */
 const TASK_COLUMNS: DataTableColumn<Task>[] = [
   {
     key: "title",

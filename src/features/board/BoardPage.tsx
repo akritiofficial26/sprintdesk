@@ -3,14 +3,15 @@ import {
   DndContext,
   DragOverlay,
   KeyboardSensor,
+  MeasuringStrategy,
   PointerSensor,
-  closestCorners,
   useSensor,
   useSensors,
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { createBoardCollisionDetection, resolveDropTarget } from "./dragDrop";
 import { useEnsureBoardLoaded } from "./useEnsureBoardLoaded";
 import { COLUMN_ORDER, COLUMN_TITLES, useBoardStore } from "../../store/boardStore";
 import { BoardColumn } from "./components/BoardColumn";
@@ -78,6 +79,11 @@ export default function BoardPage() {
     return result;
   }, [columns, tasks, filters]);
 
+  const collisionDetection = useMemo(
+    () => createBoardCollisionDetection(filteredColumns),
+    [filteredColumns]
+  );
+
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
       const task = tasks[Number(event.active.id)];
@@ -92,19 +98,9 @@ export default function BoardPage() {
       setActiveTask(null);
       if (!over) return;
 
-      const activeId = Number(active.id);
-      const overId = String(over.id);
-
-      if ((COLUMN_ORDER as string[]).includes(overId)) {
-        const targetColumn = overId as ColumnId;
-        moveTask(activeId, targetColumn, columns[targetColumn].length);
-        return;
-      }
-
-      const overTask = tasks[Number(overId)];
-      if (!overTask) return;
-      const targetIndex = columns[overTask.columnId].indexOf(overTask.id);
-      moveTask(activeId, overTask.columnId, targetIndex);
+      const target = resolveDropTarget(over.id, columns, tasks);
+      if (!target) return;
+      moveTask(Number(active.id), target.columnId, target.index);
     },
     [columns, tasks, moveTask]
   );
@@ -163,7 +159,8 @@ export default function BoardPage() {
       ) : (
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCorners}
+          collisionDetection={collisionDetection}
+          measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >

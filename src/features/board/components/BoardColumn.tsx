@@ -17,7 +17,10 @@ function BoardColumnComponent({ columnId, title, taskIds, tasks, onOpenTask, onA
   const { setNodeRef, isOver } = useDroppable({ id: columnId });
 
   return (
-    <div className="flex w-[280px] shrink-0 flex-col gap-md rounded-lg bg-surface-container-low p-md sm:w-[300px]">
+    <div
+      ref={setNodeRef}
+      className="flex w-[280px] shrink-0 flex-col gap-md rounded-lg bg-surface-container-low p-md sm:w-[300px]"
+    >
       <div className="flex items-center justify-between">
         <h2 className="text-body-lg font-semibold text-on-surface">{title}</h2>
         <span
@@ -30,7 +33,6 @@ function BoardColumnComponent({ columnId, title, taskIds, tasks, onOpenTask, onA
 
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         <div
-          ref={setNodeRef}
           className={[
             "flex min-h-[80px] flex-1 flex-col gap-sm rounded-lg p-xs transition-colors",
             isOver ? "bg-primary-container/20" : "",
@@ -60,11 +62,6 @@ function BoardColumnComponent({ columnId, title, taskIds, tasks, onOpenTask, onA
   );
 }
 
-/**
- * BoardPage holds all the drawer/modal open-state, so any of those toggles
- * would otherwise re-render all four columns and every card beneath them.
- * Memoizing here means opening a task drawer touches no board DOM at all.
- */
 export const BoardColumn = memo(BoardColumnComponent);
 
 BoardColumn.displayName = "BoardColumn";

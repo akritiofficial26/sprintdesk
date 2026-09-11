@@ -65,7 +65,6 @@ describe("DashboardPage", () => {
   it("summarises the board: totals and completion rate come from the store", () => {
     renderDashboard();
 
-    // 1 of 4 tasks is done.
     expect(screen.getByText("Total").closest("article")).toHaveTextContent("4");
     expect(screen.getAllByText("25%").length).toBeGreaterThan(0);
   });
