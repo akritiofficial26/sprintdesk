@@ -5,14 +5,23 @@ interface SelectOption {
   label: string;
 }
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+type SelectSize = "sm" | "md";
+
+interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, "size"> {
   label: string;
   options: SelectOption[];
   hideLabel?: boolean;
+  size?: SelectSize;
 }
 
+
+const sizeClasses: Record<SelectSize, string> = {
+  sm: "py-sm",
+  md: "py-md",
+};
+
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, options, hideLabel, id, className = "", ...rest }, ref) => {
+  ({ label, options, hideLabel, size = "md", id, className = "", ...rest }, ref) => {
     const generatedId = useId();
     const selectId = id ?? generatedId;
 
@@ -26,7 +35,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ref={ref}
             id={selectId}
             className={[
-              "w-full appearance-none rounded-lg border border-outline-variant bg-surface-bright py-md pl-md pr-2xl text-body-md text-on-surface outline-none",
+              "w-full appearance-none rounded-lg border border-outline-variant bg-surface-bright pl-md pr-2xl text-body-md text-on-surface outline-none",
+              sizeClasses[size],
               "transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/10",
               className,
             ].join(" ")}

@@ -4,12 +4,7 @@ import { useAuthStore } from "../store/authStore";
 import { NotificationBell } from "../features/notifications/NotificationBell";
 import { ThemeToggle } from "./ui/ThemeToggle";
 
-/**
- * Routes that own the viewport instead of growing the document: the page is
- * pinned to the window height and scrolling happens inside the page itself.
- * Only applied from `md` up - on a phone a locked-height board leaves the
- * columns too short to be useful, so there we keep the normal page scroll.
- */
+
 const FULL_HEIGHT_ROUTES = ["/board"];
 
 const navItems = [
@@ -153,8 +148,9 @@ export function Layout() {
         </header>
         <main
           className={[
-            "mx-auto w-full max-w-container-max p-lg",
-            isFullHeight ? "md:min-h-0 md:flex-1 md:overflow-hidden" : "",
+            "mx-auto w-full max-w-container-max",
+          
+            isFullHeight ? "p-md md:min-h-0 md:flex-1 md:overflow-hidden" : "p-lg",
           ].join(" ")}
         >
           <Outlet />

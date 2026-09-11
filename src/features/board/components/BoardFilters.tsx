@@ -27,6 +27,7 @@ export function BoardFilters() {
           { value: "medium", label: "Medium" },
           { value: "high", label: "High" },
         ]}
+        size="sm"
         className="min-w-[160px]"
       />
       <Select
@@ -34,6 +35,7 @@ export function BoardFilters() {
         value={filters.assignee}
         onChange={(e) => setFilters({ assignee: e.target.value })}
         options={[{ value: "all", label: "All assignees" }, ...assignees.map((a) => ({ value: a, label: a }))]}
+        size="sm"
         className="min-w-[160px]"
       />
       {lastMove && (

@@ -127,14 +127,9 @@ export default function BoardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-lg md:h-full md:min-h-0">
-      <div className="flex flex-wrap items-start justify-between gap-md">
-        <div>
-          <h1 className="text-headline-md text-on-surface">Sprint Board</h1>
-          <p className="text-body-md text-on-surface-variant">
-            Backlog · In Progress · Review · Done
-          </p>
-        </div>
+    <div className="flex flex-col gap-md md:h-full md:min-h-0">
+      <div className="flex flex-wrap items-center justify-between gap-md">
+        <h1 className="text-headline-md text-on-surface">Sprint Board</h1>
         <Button onClick={() => setAddModalColumn("backlog")}>
           <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
             add
