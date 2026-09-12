@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, type PointerEvent as ReactPointerEvent, type PointerEventHandler } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Task } from "../../../types";
@@ -12,6 +12,10 @@ const PRIORITY_STYLES: Record<Task["priority"], string> = {
 interface TaskCardProps {
   task: Task;
   onOpen: (task: Task) => void;
+}
+
+function stopDragActivation(event: ReactPointerEvent) {
+  event.stopPropagation();
 }
 
 function TaskCardComponent({ task, onOpen }: TaskCardProps) {
@@ -31,6 +35,8 @@ function TaskCardComponent({ task, onOpen }: TaskCardProps) {
     opacity: isDragging ? 0.4 : 1,
   };
 
+  const activateDrag = listeners?.onPointerDown as PointerEventHandler<HTMLDivElement> | undefined;
+
   const dueDate = new Date(task.dueDate);
   const isOverdue = task.columnId !== "done" && dueDate < new Date(new Date().toDateString());
 
@@ -38,7 +44,8 @@ function TaskCardComponent({ task, onOpen }: TaskCardProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className="flex flex-col gap-sm rounded-lg border border-outline-variant bg-surface-bright p-md shadow-subtle transition-shadow hover:shadow-md"
+      onPointerDown={activateDrag}
+      className="flex cursor-grab select-none flex-col gap-sm rounded-lg border border-outline-variant bg-surface-bright p-md shadow-subtle transition-shadow hover:shadow-md active:cursor-grabbing"
     >
       <div className="flex items-start gap-sm">
         <button
@@ -55,7 +62,8 @@ function TaskCardComponent({ task, onOpen }: TaskCardProps) {
 
         <button
           onClick={() => onOpen(task)}
-          className="flex-1 text-left text-body-md font-medium text-on-surface transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          onPointerDown={stopDragActivation}
+          className="flex-1 cursor-pointer text-left text-body-md font-medium text-on-surface transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           {task.title}
         </button>

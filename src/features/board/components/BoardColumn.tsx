@@ -21,23 +21,31 @@ function BoardColumnComponent({ columnId, title, taskIds, tasks, onOpenTask, onA
       ref={setNodeRef}
       className="flex w-[280px] shrink-0 flex-col gap-md rounded-lg bg-surface-container-low p-md sm:w-[300px] md:min-h-0"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-sm">
         <h2 className="text-body-lg font-semibold text-on-surface">{title}</h2>
-        <span
-          aria-label={`${taskIds.length} tasks`}
-          className="rounded-full bg-surface-container-highest px-sm py-[2px] text-label-md text-on-surface-variant"
-        >
-          {taskIds.length}
-        </span>
+        <div className="flex items-center gap-sm">
+          <span
+            aria-label={`${taskIds.length} tasks`}
+            className="rounded-full bg-surface-container-highest px-sm py-[2px] text-label-md text-on-surface-variant"
+          >
+            {taskIds.length}
+          </span>
+          <button
+            onClick={() => onAddTask(columnId)}
+            aria-label={`Add task to ${title}`}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-surface-container-highest hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+              add
+            </span>
+          </button>
+        </div>
       </div>
 
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         <div
           className={[
             "flex min-h-[80px] flex-1 flex-col gap-sm rounded-lg p-xs transition-colors",
-            // The only scroll region in the column: the heading and the "Add
-            // task" button sit outside it and stay put. Lifted below `md`,
-            // where the page scrolls as a whole instead.
             "md:min-h-0 md:overflow-y-auto",
             isOver ? "bg-primary-container/20" : "",
           ].join(" ")}
@@ -52,16 +60,6 @@ function BoardColumnComponent({ columnId, title, taskIds, tasks, onOpenTask, onA
           )}
         </div>
       </SortableContext>
-
-      <button
-        onClick={() => onAddTask(columnId)}
-        className="flex items-center justify-center gap-xs rounded-lg border border-dashed border-outline-variant py-sm text-body-sm text-on-surface-variant transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-      >
-        <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
-          add
-        </span>
-        Add task
-      </button>
     </div>
   );
 }
