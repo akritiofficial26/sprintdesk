@@ -53,7 +53,7 @@ export function Layout() {
           "md:translate-x-0",
         ].join(" ")}
       >
-        <div className="mb-md flex items-center justify-between gap-md border-b border-outline-variant p-lg">
+        <div className="flex h-16 items-center justify-between gap-md border-b border-outline-variant p-md">
           <div className="flex items-center gap-md">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-on-primary">
               <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
@@ -73,7 +73,7 @@ export function Layout() {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-xs px-md" aria-label="Primary">
+        <nav className="flex-1 space-y-xs px-md pt-md" aria-label="Primary">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -129,7 +129,7 @@ export function Layout() {
           isFullHeight ? "md:flex md:h-full md:flex-col md:overflow-hidden" : "",
         ].join(" ")}
       >
-        <header className="sticky top-0 z-30 flex shrink-0 items-center gap-md border-b border-outline-variant bg-surface-container-low p-md">
+        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-md border-b border-outline-variant bg-surface-container-low p-md">
           <button
             onClick={() => setIsNavOpen(true)}
             aria-label="Open navigation menu"

@@ -10,7 +10,7 @@ function AppShellSkeleton() {
   return (
     <div className="min-h-screen bg-background">
       <aside className="fixed left-0 top-0 hidden h-full w-[240px] flex-col border-r border-outline-variant bg-surface-container-low md:flex">
-        <div className="flex items-center gap-md border-b border-outline-variant p-lg">
+        <div className="flex h-16 items-center gap-md border-b border-outline-variant p-md">
           <Skeleton className="h-8 w-8 shrink-0" />
           <Skeleton className="h-5 w-28" />
         </div>
@@ -31,7 +31,7 @@ function AppShellSkeleton() {
       </aside>
 
       <div className="md:pl-[240px]">
-        <header className="flex items-center gap-md border-b border-outline-variant bg-surface-container-low p-md">
+        <header className="flex h-16 items-center gap-md border-b border-outline-variant bg-surface-container-low p-md">
           <Skeleton className="h-6 w-6 md:hidden" />
           <div className="ml-auto flex items-center gap-md">
             <Skeleton className="h-6 w-6" />

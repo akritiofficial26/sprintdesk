@@ -113,7 +113,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-lg">
-      <header className="rounded-2xl border border-outline-variant bg-surface-container-low p-lg">
+      <header className="sticky top-16 z-20 rounded-2xl border border-outline-variant bg-surface-container-low p-lg shadow-subtle">
         <div className="flex items-center justify-between gap-md">
           <div>
             <p className="text-label-md uppercase tracking-[0.16em] text-on-surface-variant">Overview</p>
